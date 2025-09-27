@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Create Story - AI Story Co-Author{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Create Your Story</h4>
+            </div>
+            <div class="card-body">
+                <!-- Story Form -->
+                <form id="storyForm">
+                    <div class="mb-3">
+                        <label for="storyTitle" class="form-label">Story Title</label>
+                        <input type="text" class="form-control" id="storyTitle" 
+                               placeholder="Enter your story title..." required>
+                        <div class="invalid-feedback">Please provide a title for your story.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="userText" class="form-label">Your Story Beginning</label>
+                        <textarea class="form-control" id="userText" rows="6" 
+                                  placeholder="Start writing your story here..." required></textarea>
+                        <div class="invalid-feedback">Please write something to continue.</div>
+                        <small class="text-muted">Minimum 20 characters required</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="personality" class="form-label">AI Personality</label>
+                        <select class="form-select" id="personality" required>
+                            {% for persona in personalities %}
+                            <option value="{{ persona }}">{{ persona.title() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary" id="generateBtn">
+                            <i class="bi bi-magic"></i> Generate Continuation
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="clearBtn">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- AI Response Section -->
+                <div id="responseSection" class="mt-4" style="display: none;">
+                    <hr>
+                    <h5 class="text-primary">AI Continuation:</h5>
+                    <div class="alert alert-info" id="aiResponse"></div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-success" id="saveBtn">
+                            <i class="bi bi-save"></i> Save Story
+                        </button>
+                        <button type="button" class="btn btn-warning" id="regenerateBtn">
+                            <i class="bi bi-arrow-clockwise"></i> Regenerate
+                        </button>
+                        <button type="button" class="btn btn-info" id="editBtn">
+                            <i class="bi bi-pencil"></i> Edit & Continue
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="text-center mt-4" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Generating...</span>
+                    </div>
+                    <p class="mt-2">AI is writing...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success Alert -->
+        <div class="alert alert-success alert-dismissible fade show mt-3" id="successAlert" style="display: none;">
+            <i class="bi bi-check-circle"></i> Story saved successfully!
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <!-- Error Alert -->
+        <div class="alert alert-danger alert-dismissible fade show mt-3" id="errorAlert" style="display: none;">
+            <i class="bi bi-exclamation-triangle"></i> <span id="errorMessage"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+</div>
+{% endblock %}

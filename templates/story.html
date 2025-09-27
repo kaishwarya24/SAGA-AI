@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ story.title }} - AI Story Co-Author{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ story.title }}</h4>
+                <small>Created on {{ story.created_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="badge bg-secondary">AI Personality: {{ story.personality.title() }}</span>
+                </div>
+                
+                <div class="story-section mb-4">
+                    <h5 class="text-muted"><i class="bi bi-person"></i> Your Part:</h5>
+                    <div class="p-3 bg-light rounded">
+                        {{ story.user_input }}
+                    </div>
+                </div>
+                
+                <div class="story-section mb-4">
+                    <h5 class="text-primary"><i class="bi bi-robot"></i> AI's Continuation:</h5>
+                    <div class="p-3 bg-info bg-opacity-10 rounded">
+                        {{ story.ai_response }}
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <a href="{{ url_for('download_story', story_id=story.id) }}" class="btn btn-success">
+                        <i class="bi bi-download"></i> Download as TXT
+                    </a>
+                    <button class="btn btn-primary" id="copyBtn" data-story-id="{{ story.id }}">
+                        <i class="bi bi-clipboard"></i> Copy to Clipboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#copyBtn').click(function() {
+        var storyText = `Title: {{ story.title }}
+        
+Your Part:
+{{ story.user_input }}
+
+AI's Continuation:
+{{ story.ai_response }}`;
+        
+        navigator.clipboard.writeText(storyText).then(function() {
+            $('#copyBtn').html('<i class="bi bi-check"></i> Copied!');
+            setTimeout(function() {
+                $('#copyBtn').html('<i class="bi bi-clipboard"></i> Copy to Clipboard');
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}
